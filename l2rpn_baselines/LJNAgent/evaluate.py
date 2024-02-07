@@ -1,4 +1,3 @@
-
 import os
 import warnings
 
@@ -9,15 +8,18 @@ from lightsim2grid import LightSimBackend
 from l2rpn_baselines.LJNAgent import LJNAgent
 from l2rpn_baselines.utils.save_log_gif import save_log_gif
 
-def evaluate(env,
-             load_path=".",
-             logs_path=None,
-             nb_episode=1,
-             nb_process=1,
-             max_steps=-1,
-             verbose=False,
-             save_gif=False,
-             **kwargs):
+
+def evaluate(
+    env,
+    load_path=".",
+    logs_path=None,
+    nb_episode=1,
+    nb_process=1,
+    max_steps=-1,
+    verbose=False,
+    save_gif=False,
+    **kwargs
+):
     """
     Evaluate the agent with a default config based on l2rpn_idf_2023 environment
 
@@ -67,25 +69,27 @@ def evaluate(env,
 
     # Build the runner
     runner = Runner(**env.get_params_for_runner(), agentClass=None, agentInstance=agent)
-    
-    if logs_path is not None : 
-        os.makedirs(logs_path, exist_ok=True)
-    results = runner.run(path_save=logs_path,
-                     nb_episode=nb_episode,
-                     nb_process=nb_process,
-                     max_iter=max_steps,
-                     pbar=verbose)
 
-    
+    if logs_path is not None:
+        os.makedirs(logs_path, exist_ok=True)
+    results = runner.run(
+        path_save=logs_path,
+        nb_episode=nb_episode,
+        nb_process=nb_process,
+        max_iter=max_steps,
+        pbar=verbose,
+    )
+
     print("Evaluation summary:")
     for _, chron_name, cum_reward, nb_time_step, max_ts in results:
         msg_tmp = "chronics at: {}".format(chron_name)
         msg_tmp += "\ttotal score: {:.6f}".format(cum_reward)
         msg_tmp += "\ttime steps: {:.0f}/{:.0f}".format(nb_time_step, max_ts)
         print(msg_tmp)
-    
+
     if save_gif:
         save_log_gif(logs_path, results)
+
 
 if __name__ == "__main__":
     import grid2op
@@ -93,12 +97,14 @@ if __name__ == "__main__":
     from lightsim2grid.lightSimBackend import LightSimBackend
 
     args_cli = cli_eval().parse_args()
-    env = grid2op.make('l2rpn_idf_2023', backend=LightSimBackend())
-    print('--- Starting evaluation on l2rpn_idf_2023 ---')
-    evaluate(env,
-             load_path='./',
-             nb_episode=args_cli.nb_episode,
-             nb_process=args_cli.nb_process,
-             max_steps=args_cli.max_steps,
-             verbose=args_cli.verbose,
-             save_gif=args_cli.save_gif)
+    env = grid2op.make("l2rpn_idf_2023", backend=LightSimBackend())
+    print("--- Starting evaluation on l2rpn_idf_2023 ---")
+    evaluate(
+        env,
+        load_path="./",
+        nb_episode=args_cli.nb_episode,
+        nb_process=args_cli.nb_process,
+        max_steps=args_cli.max_steps,
+        verbose=args_cli.verbose,
+        save_gif=args_cli.save_gif,
+    )

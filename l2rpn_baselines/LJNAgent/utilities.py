@@ -18,7 +18,8 @@ from grid2op.dtypes import dt_int
 
 
 def find_best_line_to_reconnect(
-        obs: BaseObservation, original_action: BaseAction) -> BaseAction:
+    obs: BaseObservation, original_action: BaseAction
+) -> BaseAction:
     """Given an observation and action try to reconnect a line by modifying the given original action
     and returning the modified action with the reconnection if possible.
 
@@ -44,7 +45,9 @@ def find_best_line_to_reconnect(
             if not is_legal(reconnect_action, obs):
                 continue
             o, _, done, info = obs.simulate(reconnect_action)
-            if not is_valid(observation=obs, act=reconnect_action, done_sim=done, info_sim=info):
+            if not is_valid(
+                observation=obs, act=reconnect_action, done_sim=done, info_sim=info
+            ):
                 continue
             if o.rho.max() < min_rho:
                 line_to_reconnect = line
@@ -70,13 +73,14 @@ def is_legal(action: BaseAction, obs: BaseObservation) -> bool:
         Whether the given action is valid/legal or not.
 
     """
+
     def extract_line_number(s: str) -> int:
-        match = re.search(r'_(\d+)$', s)
+        match = re.search(r"_(\d+)$", s)
         if match:
             return int(match.group(1))
         else:
             raise ValueError(f"Unexpected key format: {s}")
-            
+
     action_dict = action.as_dict()
 
     if action_dict == {}:
@@ -87,7 +91,9 @@ def is_legal(action: BaseAction, obs: BaseObservation) -> bool:
 
     # Check substations:
     if topo_action_type == "set_bus_vect" or topo_action_type == "change_bus_vect":
-        substations = [int(sub) for sub in action.as_dict()[topo_action_type]["modif_subs_id"]]
+        substations = [
+            int(sub) for sub in action.as_dict()[topo_action_type]["modif_subs_id"]
+        ]
 
         for substation_to_operate in substations:
             if obs.time_before_cooldown_sub[substation_to_operate]:
@@ -96,7 +102,9 @@ def is_legal(action: BaseAction, obs: BaseObservation) -> bool:
             # Check lines:
             for line in [
                 extract_line_number(key)
-                for key, val in action.as_dict()[topo_action_type][str(substation_to_operate)].items()
+                for key, val in action.as_dict()[topo_action_type][
+                    str(substation_to_operate)
+                ].items()
                 if "line" in val["type"]
             ]:
                 if obs.time_before_cooldown_line[line] or not obs.line_status[line]:
@@ -104,7 +112,9 @@ def is_legal(action: BaseAction, obs: BaseObservation) -> bool:
                     legal_act = False
     elif topo_action_type == "set_line_status":
 
-        lines = [int(line) for line in action.as_dict()[topo_action_type]["connected_id"]]
+        lines = [
+            int(line) for line in action.as_dict()[topo_action_type]["connected_id"]
+        ]
         for line in lines:
             if obs.time_before_cooldown_line[line]:
                 legal_act = False
@@ -129,7 +139,9 @@ def check_convergence(action: BaseAction, obs: BaseObservation) -> bool:
     load_p_stressed = obs.load_p * 1.05
     gen_p_stressed = obs.gen_p * 1.05
 
-    simulator_stressed = simulator.predict(act=action, new_gen_p=gen_p_stressed, new_load_p=load_p_stressed)
+    simulator_stressed = simulator.predict(
+        act=action, new_gen_p=gen_p_stressed, new_load_p=load_p_stressed
+    )
 
     if not simulator_stressed.converged:
         return False
@@ -148,7 +160,12 @@ def get_from_dict_set_bus(original: dict) -> dict:
         Dictionary with set_bus action
 
     """
-    dict_act = {"lines_or_id": [], "lines_ex_id": [], "loads_id": [], "generators_id": []}
+    dict_act = {
+        "lines_or_id": [],
+        "lines_ex_id": [],
+        "loads_id": [],
+        "generators_id": [],
+    }
     for key, value in original.items():
         for old, new in [
             ("line (origin)", "lines_or_id"),
@@ -163,7 +180,7 @@ def get_from_dict_set_bus(original: dict) -> dict:
 
 
 def extract_action_set_from_actions(
-        action_space: ActionSpace, action_vect: np.ndarray
+    action_space: ActionSpace, action_vect: np.ndarray
 ) -> List[BaseAction]:
     """Method to separate multiple substation actions into single actions.
 
@@ -224,7 +241,7 @@ def extract_action_set_from_actions(
 
 
 def split_action_and_return(
-        obs: BaseObservation, action_space: ActionSpace, action_vect: np.ndarray
+    obs: BaseObservation, action_space: ActionSpace, action_vect: np.ndarray
 ) -> Iterator[BaseAction]:
     """Split an action with potentially multiple affected stations and return them sequentially as a generator/iterator.
 
@@ -266,7 +283,9 @@ def split_action_and_return(
             obs_f, _, done, info = obs.simulate(act_plus_reconnect)
 
             # Check if valid
-            if not is_valid(observation=obs, act=act_plus_reconnect, done_sim=done, info_sim=info):
+            if not is_valid(
+                observation=obs, act=act_plus_reconnect, done_sim=done, info_sim=info
+            ):
                 continue
 
             if obs_f.rho.max() < obs_min:
@@ -282,8 +301,13 @@ def split_action_and_return(
             split_actions.remove(best_choice)
 
 
-def is_valid(observation: BaseObservation, act: BaseAction, done_sim, info_sim, check_overload: Optional[bool] =
-False) -> bool:
+def is_valid(
+    observation: BaseObservation,
+    act: BaseAction,
+    done_sim,
+    info_sim,
+    check_overload: Optional[bool] = False,
+) -> bool:
     """Checks whether the simulation output is legal/valid for our configuration
 
     Args:
@@ -304,7 +328,7 @@ False) -> bool:
         valid_action = False
     if info_sim["is_illegal"]:
         valid_action = False
-    if info_sim['is_ambiguous']:
+    if info_sim["is_ambiguous"]:
         valid_action = False
     if any(info_sim["exception"]):
         valid_action = False
@@ -314,10 +338,12 @@ False) -> bool:
     return valid_action
 
 
-def simulate_action(action_space: ActionSpace, obs: BaseObservation, action_vect: np.array,
-                    check_overload: Optional[bool] = False) -> \
-        Tuple[
-            float, bool]:
+def simulate_action(
+    action_space: ActionSpace,
+    obs: BaseObservation,
+    action_vect: np.array,
+    check_overload: Optional[bool] = False,
+) -> Tuple[float, bool]:
     """Simulate the impact of the given action. This method can be used by both  the tutor and the
     Senior and should result in better choices, when tuple/tripple actions are implemented.
 
@@ -341,17 +367,27 @@ def simulate_action(action_space: ActionSpace, obs: BaseObservation, action_vect
         obs_f, _, done, info = obs.simulate(action)
     else:
         # length is longer than 1:
-        gen = split_action_and_return(obs=obs, action_space=action_space, action_vect=action_vect)
+        gen = split_action_and_return(
+            obs=obs, action_space=action_space, action_vect=action_vect
+        )
         action = next(gen)
         obs_f, _, done, info = obs.simulate(action)
     rho_max = obs_f.rho.max()
 
-    valid_action = is_valid(observation=obs, act=action, done_sim=done, info_sim=info, check_overload=check_overload)
+    valid_action = is_valid(
+        observation=obs,
+        act=action,
+        done_sim=done,
+        info_sim=info,
+        check_overload=check_overload,
+    )
 
     return rho_max, valid_action
 
 
-def split_and_execute_action(env: BaseEnv, action_vect: np.ndarray) -> Tuple[BaseObservation, float, bool, dict]:
+def split_and_execute_action(
+    env: BaseEnv, action_vect: np.ndarray
+) -> Tuple[BaseObservation, float, bool, dict]:
     """Split and execute an action with potentially multiple affected stations.
 
     Depending on the input, the method either executes the numpy array as a unitary step, or
@@ -409,8 +445,11 @@ def split_and_execute_action(env: BaseEnv, action_vect: np.ndarray) -> Tuple[Bas
     return obs, cum_rew, done, info
 
 
-def revert_topo(action_space: grid2op.Action.ActionSpace, obs: grid2op.Observation.BaseObservation,
-                rho_limit: Optional[float] = 0.8) -> np.array:
+def revert_topo(
+    action_space: grid2op.Action.ActionSpace,
+    obs: grid2op.Observation.BaseObservation,
+    rho_limit: Optional[float] = 0.8,
+) -> np.array:
     """Method, if the topology can be reverted to its original state.
 
     Given that the original state is all substations at bus bar 1, we search for any bus bars equal to
@@ -433,14 +472,27 @@ def revert_topo(action_space: grid2op.Action.ActionSpace, obs: grid2op.Observati
         for sub_id in range(obs.n_sub):
             if np.any(obs.sub_topology(sub_id) == 2):
                 available_actions[sub_id] = action_space(
-                    {"set_bus": {"substations_id": [(sub_id, np.ones(len(obs.sub_topology(sub_id)), dtype=dt_int))]}}
+                    {
+                        "set_bus": {
+                            "substations_id": [
+                                (
+                                    sub_id,
+                                    np.ones(
+                                        len(obs.sub_topology(sub_id)), dtype=dt_int
+                                    ),
+                                )
+                            ]
+                        }
+                    }
                 ).to_vect()
 
         if any(available_actions):
             min_rho = min([obs.rho.max(), rho_limit])
 
             for sub_id, act_a in available_actions.items():
-                obs_sim, valid_action = simulate_action(action_vect=act_a, action_space=action_space, obs=obs)
+                obs_sim, valid_action = simulate_action(
+                    action_vect=act_a, action_space=action_space, obs=obs
+                )
                 if not valid_action:
                     continue
                 if obs_sim < min_rho:

@@ -18,12 +18,10 @@ This agent is highly competitive on large complex environment while remaining co
 4. [Acknowledgments](#acknowledgments)
 5. [License](#license)
 
-
 ## Authors
 
 - Van Tuan DANG, Phd, Data-Scientist at La Javaness - [van.tuan\@lajavaness.com](mailto:van.tuan@lajavaness.com?subject=Test) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/van-tuan-dang-7b0b4444/)
-- Jules SINTES, Data-Scientist at La Javaness - [jules.sintes\@lajavaness.com](mailto:jules@lajavaness.com?subject=Test) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jules-sintes/)
-
+- Jules SINTES, Data-Scientist at La Javaness - [jules\@lajavaness.com](mailto:jules@lajavaness.com?subject=Test) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jules-sintes/)
 
 ## Setup
 
