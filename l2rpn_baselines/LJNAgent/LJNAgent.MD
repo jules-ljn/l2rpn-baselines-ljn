@@ -1,6 +1,6 @@
 # LJN Agent - A modular agent for combined continuous control and topology management on large grid
 
-![Static Badge](https://img.shields.io/badge/La_Javaness-blue?style=flat&labelColor=FFFFFF&color=0000FF&link=https%3A%2F%2Fwww.lajavaness.com%2F)
+[![Static Badge](https://img.shields.io/badge/La_Javaness-blue?style=flat&labelColor=FFFFFF&color=0000FF)](https://www.lajavaness.com/)
 ![Static Badge](https://img.shields.io/badge/license-MPL%202.0-black)
 
 This agent is a simplified version of the winning agent of the L2RPN 2023 IDF AI challenge co-organized by RTE and Paris Region. It comes as an enhanced an enhanced combination of pre-existing baselines such as the curriculum agent and the optimCVXPY agent with additional features. Its development was guided towards the challenge's specific requirements. Especially, it combines continuous control and bus reconfiguration decision making with additional heuristics to operate the grid safely at low cost (i.e. maximizing an operational score) while maximizing the use of renewable energy available at all time.
@@ -21,8 +21,8 @@ This agent is highly competitive on large complex environment while remaining co
 
 ## Authors
 
-- Van Tuan DANG, Phd, Data-Scientist at La Javaness - [van.tuan\@lajavaness.com](mailto:van.tuan@lajavaness.com?subject=Test)
-- Jules SINTES, Data-Scientist at La Javaness - [jules.sintes\@lajavaness.com](mailto:jules@lajavaness.com?subject=Test)
+- Van Tuan DANG, Phd, Data-Scientist at La Javaness - [van.tuan\@lajavaness.com](mailto:van.tuan@lajavaness.com?subject=Test) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/van-tuan-dang-7b0b4444/)
+- Jules SINTES, Data-Scientist at La Javaness - [jules.sintes\@lajavaness.com](mailto:jules@lajavaness.com?subject=Test) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jules-sintes/)
 
 
 ## Setup
@@ -49,13 +49,27 @@ _NOTE : The size of the provided actions spaces are given as an indicator to bui
 
 ### Evaluate
 
-Given the provided action space, the evaluation should be run on environment `l2rpn_idf_2023`.
+Given the provided action space, the evaluation should be run on environment `l2rpn_idf_2023` but one can try with its own action space set on a different environment.
 
+**Command line** 
+```bash
+python l2rpn_baselines/LJNAgent/evaluate.py --nb_episode=2 --nb_process=1 --verbose=True
+```
+
+**Python code**
 ```python
 from l2rpn_baselines.LJNAgent import LJNAgent, evaluate
-from lightsim2grid.lightSimBackend import LightSimBackend
+from lightsim2grid.lightSimBackend import LightSimBackend # Recommended for faster simulation
 from grid2op import make
 
+env = make("l2rpn_idf_2023", backend = LightSimBackend())
+evaluate(env,
+        logs_path=None,
+        nb_episode=10,
+        nb_process=1,
+        max_steps=-1,
+        verbose=True,
+        save_gif=False)
 
 ```
 

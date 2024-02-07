@@ -88,16 +88,15 @@ def evaluate(env,
         save_log_gif(logs_path, results)
 
 if __name__ == "__main__":
-
     import grid2op
     from l2rpn_baselines.utils import cli_eval
-    from lightsim2grid.backend import LightSimBackend
+    from lightsim2grid.lightSimBackend import LightSimBackend
 
     args_cli = cli_eval().parse_args()
     env = grid2op.make('l2rpn_idf_2023', backend=LightSimBackend())
+    print('--- Starting evaluation on l2rpn_idf_2023 ---')
     evaluate(env,
-             load_path=args_cli.load_path,
-             logs_path=args_cli.logs_path,
+             load_path='./',
              nb_episode=args_cli.nb_episode,
              nb_process=args_cli.nb_process,
              max_steps=args_cli.max_steps,
