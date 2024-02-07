@@ -1,4 +1,4 @@
-# LJN Agent, winning agent of L2RPN 2023 IDF AI challenge
+# LJN Agent - A modular agent for combined continuous control and topology management on large grid
 
 ![Static Badge](https://img.shields.io/badge/license-MPL%202.0-black) 
 
@@ -38,6 +38,7 @@ _NOTE : The size of the provided actions spaces are given as an indicator to bui
 
 Given the provided action space, the evaluation should be run on environment `l2rpn_idf_2023`.
 
+
 ### Parameters
 
 #### High Level heuristics
@@ -72,9 +73,12 @@ Given the provided action space, the evaluation should be run on environment `l2
 
 There is a tradeoff between computationnal efficiency and size of action space: Larger - _high-quality_ - action space should increase agent's performance while the decision time might significantly decrease. However, we found out that small cherry-picked action spaces are well suited to handle most of the situations.
 
-## Acknowledgmements
+## Reference
 
-TO DO
+This baseline agent is mainly inspired by the work done on :
+- [The OptimCVXPY agent from this package](https://github.com/rte-france/l2rpn-baselines/tree/master/l2rpn_baselines/OptimCVXPY)
+- [Binbinchen's solution to the NEURIPS 2020 challenge](https://github.com/AsprinChina/L2RPN_NIPS_2020_a_PPO_Solution)
+- [The curriculum agent by Fraunhofer Institute](https://github.com/FraunhoferIEE/curriculumagent)
 
 ## License
 
