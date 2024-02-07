@@ -1,10 +1,23 @@
 # LJN Agent - A modular agent for combined continuous control and topology management on large grid
 
-![Static Badge](https://img.shields.io/badge/license-MPL%202.0-black) 
+![Static Badge](https://img.shields.io/badge/La_Javaness-blue?style=flat&labelColor=FFFFFF&color=0000FF&link=https%3A%2F%2Fwww.lajavaness.com%2F)
+![Static Badge](https://img.shields.io/badge/license-MPL%202.0-black)
 
 This agent is a simplified version of the winning agent of the L2RPN 2023 IDF AI challenge co-organized by RTE and Paris Region. It comes as an enhanced an enhanced combination of pre-existing baselines such as the curriculum agent and the optimCVXPY agent with additional features. Its development was guided towards the challenge's specific requirements. Especially, it combines continuous control and bus reconfiguration decision making with additional heuristics to operate the grid safely at low cost (i.e. maximizing an operational score) while maximizing the use of renewable energy available at all time.
 
 This agent is highly competitive on large complex environment while remaining computationally efficient (max. decision time < 3 seconds).
+
+
+**Content**
+1. [Authors](#authors)
+2. [Setup](#setup)
+3. [How to Run the Agent](#how-to-run-the-agent)
+   - [Training on custom environment](#training-on-a-custom-environment)
+   - [Evaluate](#evaluate)
+   - [Parameters](#parameters)
+4. [Acknowledgments](#acknowledgments)
+5. [License](#license)
+
 
 ## Authors
 
@@ -20,7 +33,7 @@ This agent has been developed for the particular environment of the L2RPN Ile-de
 
 ## How to run the agent
 
-### Train
+### Training on a custom environment
 
 The training process to cherry pick the discrete bus reconfiguration mainly relies on exhaustive simulation and greedy search on the complete action space. It mainly used the work done for the [curriculum agent](https://github.com/FraunhoferIEE/curriculumagent/tree/master) with custom implementations for the specific needs within the frame of the L2RPN IDF 2023 challenge. This process is computionally intensive and it is recommended to use large CPU resources when trying to generate action space on large environment. 
 
@@ -38,6 +51,13 @@ _NOTE : The size of the provided actions spaces are given as an indicator to bui
 
 Given the provided action space, the evaluation should be run on environment `l2rpn_idf_2023`.
 
+```python
+from l2rpn_baselines.LJNAgent import LJNAgent, evaluate
+from lightsim2grid.lightSimBackend import LightSimBackend
+from grid2op import make
+
+
+```
 
 ### Parameters
 
